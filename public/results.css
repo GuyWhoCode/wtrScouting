@@ -1,0 +1,23 @@
+body {
+  background: rgb(255,254,0);
+  background: linear-gradient(90deg, rgba(255,254,0,1) 26%, rgba(195,119,0,0.8589810924369747) 100%);
+  font-family: "Supermercado One", cursive;
+}
+h1 {
+  text-align: center;
+}
+#results {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background-color: lightblue;
+  width: 90%;
+  margin-left: 3%;
+}
+.section {
+  font-size: 5vmin;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+p {
+  font-size: 3vmin;
+}

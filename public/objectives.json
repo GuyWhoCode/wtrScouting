@@ -1,0 +1,20 @@
+{
+  "auto": {
+    "foundationMoved": "T/F",
+    "parkedUnderBridge": "T/F",
+    "skystonesMovedUnderBridge": "Num",
+    "stonesMovedUnderBridge": "Num",
+    "stoneOnFoundation": "T/F"
+  },
+  "tele": {
+    "hasCapstonePlaced": "T/F",
+    "stoneCrossedBridge": "Num",
+    "stonePlacedOnFoundation": "Num",
+    "levelOfSkyscraper": "Num"
+  },
+
+  "end": {
+    "foundationMoved": "T/F",
+    "parkedInBuildSite": "T/F"
+  }
+}
