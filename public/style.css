@@ -1,13 +1,11 @@
 body {
   background-image: linear-gradient(to right, lightblue, lightgreen);
-  font-family: "Supermercado One", cursive;
+  font-family: 'Roboto', sans-serif;
 }
 .toggle {
   margin-top: 3%;
   display: flex;
   flex-direction: row;
-/*   background-color: #EB6300; */
-  /*   border: 3px solid #F6BB00; */
   background-color: white;
   border: 3px solid black;
   width: 50%;
@@ -17,7 +15,7 @@ body {
 #submitButton {
   text-align: center;
   line-height: 50px;
-  font-family: 'Fjalla One', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 7vmin;
   border: 5px solid transparent;
   color: white;
@@ -46,12 +44,8 @@ body {
 #startButton {
   margin-top: 3%;
   font-size: 7vmin;
-  background-color: #EB6300;
-  font-family: "Supermercado One", cursive;
-}
-#startButton:hover {
-  background-color: #EBAB00;
-  transition: background-color, 1s;
+  background-color: gray;
+  font-family: 'Roboto', sans-serif;
 }
 #startScreen {
   display: flex;
@@ -194,6 +188,14 @@ input {
 }
 .numInput {
   width: 20%;
+}
+#sendResults {
+  background-color: white;
+  display: block;
+  margin: 0 auto;
+  font-family: 'Roboto', sans-serif;
+  font-size: 7vmin;
+  margin-bottom: 2%;
 }
 @media only screen and (min-width: 1100px) {
   .toggle {
