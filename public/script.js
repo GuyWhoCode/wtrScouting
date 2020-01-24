@@ -27,6 +27,9 @@ let creditToggle = true
 let submitInfo = {auto:{}, tele:{}, end:{}};
 let generated = false;
 let submit = false;
+let preventAlert = true;
+let inputsGood = true;
+let preventAlert2 = true;
 
 const toggleArrow = (setting, index) => {
   let elm = document.getElementsByClassName('button')[index] 
@@ -48,17 +51,12 @@ const toggleArrow = (setting, index) => {
   }
   
 }
-const preventStupidInputs = inputElm => {
+const preventStupidInputs = (inputElm, inputNum) => {
   let input = inputElm.value
-  if (input.length >= 6 || input.length == 0) {
-    alert('Retry again stoopid')
-    document.getElementById('teamNum').value = ""
+  if (input.length >= inputNum || input.length == 0 || input.includes(".") || input.includes("-")) {
+    inputElm.value = ""
     return false
-  } else if (input.includes(".") || input.includes("-")) {
-    alert("Hey! Illegal characters, only numbers")
-    document.getElementById('teamNum').value = ""
-    return false
-  }
+  } 
   return true
 }
 
@@ -93,16 +91,30 @@ startButton.addEventListener('click', ()=> {
 
 formInput.addEventListener("submit", (event)=> {
   event.preventDefault()
-  if (preventStupidInputs(document.getElementById('teamNum'))){
+  if (preventStupidInputs(document.getElementById('teamNum'), 6) && submit == false){
     showElm(mainContent)
     hideElm(startScreen)
     hideElm(credit)
     showElm(center)
     hideElm(creditBox)
     showElmBlock(submitButton)
+    hideElm(resultsButton)
     teamNumTitle.innerHTML = `Team ${document.getElementById('teamNum').value}`
     toggleFeatures()
-    
+  } else if (preventStupidInputs(document.getElementById('teamNum')) && submit){
+    submit = false;
+    preventAlert = true;
+    showElm(mainContent)
+    hideElm(startScreen)
+    hideElm(credit)
+    showElm(center)
+    hideElm(creditBox)
+    showElmBlock(submitButton)
+    hideElm(resultsButton)
+    teamNumTitle.innerHTML = `Team ${document.getElementById('teamNum').value}`
+    toggleFeatures()
+  } else {
+    alert("Bad input!")
   }
 })
 
@@ -178,6 +190,7 @@ const parseJSON = json => {
         numInput.type = "number"
         numInput.className = "numInput"
         numInput.id = objName
+        numInput.value = 0
         
         inputContainer.appendChild(numInput)
       }
@@ -187,12 +200,11 @@ const parseJSON = json => {
   generated = true;
 }
 
-
 const finalSubmit = () => {
   internalSocket.emit('callbackJSON')
   internalSocket.on('callJSON', data => {
     let objectiveList = data;
-    for (var index=0; index < Object.keys(objectiveList).length; index++) {
+    for (var index=0; index < 3; index++) {
       //ex. auto, tele, end
       let sectionName = Object.keys(objectiveList)[index]
       //objectives list 
@@ -201,33 +213,50 @@ const finalSubmit = () => {
       let objectiveNameList = Object.keys(objectives)
       for (var obj=0; obj < objectiveNameList.length; obj++) {
         let objName = objectiveNameList[obj]
-        
         switch (document.getElementById(objName).type) {
           case 'checkbox':
             submitInfo[sectionName][objName] = document.getElementById(objName).checked
             break;
           default:
-            submitInfo[sectionName][objName] = document.getElementById(objName).value
+            let objTrue = preventStupidInputs(document.getElementById(objName), 3)
+            objTrue ? (
+              submitInfo[sectionName][objName] = document.getElementById(objName).value
+              ): inputsGood = false
+            
+            document.getElementById(objName).value == "" 
+            ? submitInfo[sectionName][objName] = "0"
+            : undefined
             break;
         }
       }
-      submitInfo[sectionName].enabled = document.getElementsByClassName("toggleFeats toggleCheck")[index].checked
+    submitInfo[sectionName].enabled = document.getElementsByClassName("toggleFeats toggleCheck")[index].checked
     }
     submitInfo.teamName = document.getElementById('teamNum').value
-    internalSocket.emit("sendResults", submitInfo)
-    resetScreen()
-    hideElm(mainContent)
-    hideElm(submitButton)
-    showElm(credit)
-    showElm(startScreen)
+    if (submit == false && inputsGood) {
+      internalSocket.emit("sendResults", submitInfo)
+      submit = true
+      preventAlert2 = false
+    }
+    if (inputsGood) {
+      resetScreen()
+      hideElm(mainContent)
+      hideElm(submitButton)
+      showElm(credit)
+      showElm(startScreen) 
+      showElmBlock(resultsButton)
+    } else {
+      preventAlert2 ? (alert("Incorrect Input(s), Check again and resubmit."), preventAlert2 = false) : undefined 
+      inputsGood = true
+    }
   })
+  preventAlert2 = true
 }
 const resetScreen = () => {
   Object.values(document.getElementsByClassName('defaultCheck'))
     .map(val => val.checked = false)
   
   Object.values(document.getElementsByClassName('numInput'))
-    .map(val => val.value = "")
+    .map(val => val.value = "0")
   
   Object.values(document.getElementsByClassName('toggleFeats toggleCheck'))
     .map(val => val.checked = true)
@@ -235,13 +264,13 @@ const resetScreen = () => {
   Object.values(document.getElementsByClassName('robotFeats'))
     .map(val => showElmBlock(val))
   document.getElementById('teamNum').value = ""
-  if (submit == false) {
+  if (preventAlert == true) {
     alert("Your Scouting Form has been Submitted")
-    submit = true
-  } else if (submit) {
-    submit = false
-  }
+    preventAlert2 = true;
+    preventAlert = false;
+  } 
 }
+
 internalSocket.emit("readJSON")
 internalSocket.on("sendJSON", data => {
   parseJSON(data)
