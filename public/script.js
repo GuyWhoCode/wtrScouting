@@ -251,6 +251,12 @@ const finalSubmit = () => {
   })
   preventAlert2 = true
 }
+
+internalSocket.on('redirect', (destination) => {
+  console.log("this is being sent")
+  window.location.href = destination
+})
+
 const resetScreen = () => {
   Object.values(document.getElementsByClassName('defaultCheck'))
     .map(val => val.checked = false)

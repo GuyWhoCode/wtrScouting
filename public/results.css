@@ -18,7 +18,8 @@ p {
   font-size: 3vmin;
 }
 #filters {
-  display: none;
+  /* display: none; */
+  display: grid;
   grid-template-rows: repeat(4, 1fr);
   grid-template-columns: repeat(3, 1fr);
   margin-top: 3%;
@@ -70,4 +71,14 @@ p {
 #selection {
   grid-row: 1;
   grid-column: 3;
+}
+#selectTeam {
+  grid-row: 2;
+  grid-column: 3;
+  text-align: center;
+}
+#teamSearch {
+  height: 25%;
+  justify-self: center;
+  align-items: center;
 }

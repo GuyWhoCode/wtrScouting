@@ -1,5 +1,5 @@
 body {
-  background-image: linear-gradient(to right, lightblue, lightgreen);
+  background-color: black;
   font-family: 'Roboto', sans-serif;
 }
 .toggle {
@@ -44,7 +44,7 @@ body {
 #startButton {
   margin-top: 3%;
   font-size: 7vmin;
-  background-color: gray;
+  background-color: white;
   font-family: 'Roboto', sans-serif;
 }
 #startScreen {
@@ -54,8 +54,8 @@ body {
   flex-direction: column;
   margin: 0 auto;
   align-items: center;
-  box-shadow: 10px 10px 5px black;
-  background-color: white;
+  box-shadow: 10px 10px 5px gray;
+  background-color: #dbd9d8;
   padding-bottom: 5%;
   margin-bottom: 3%;
 }
@@ -77,6 +77,9 @@ body {
   align-items: center;
   margin-top: 3%;
 }
+#formInput {
+  display: grid;
+}
 #teamNum {
   width: 40%;
   height: 5vh;
@@ -87,6 +90,7 @@ body {
   font-size: 10vmin;
   margin-top: 2%;
   margin-bottom: 0;
+  color: white;
 }
 .toggleTitle {
   font-size: 7vmin;

@@ -60,10 +60,12 @@ const createTeamData = (data, avg) => {
 
   let results = document.createElement("div")
   results.id = data._id
-  
+  results.className = "teamStats"
+
   let teamName = document.createElement('h1')
   teamName.innerHTML = `Team #${data.teamNum}`
   teamName.id = data.teamNum
+  teamName.className = "teamName"
   results.appendChild(teamName)
   
   
@@ -77,12 +79,11 @@ const createTeamData = (data, avg) => {
     if (index < Object.keys(avg).length-2) {
       let avgStr = avgName.slice(3)
       avgTitle = document.createElement('h3')
-      avgTitle.innerHTML = "Average " + makeInputPretty(avg) + ":" + avg[avgName]
+      avgTitle.innerHTML = "Average " + makeInputPretty(avgStr) + ":" + avg[avgName]
     } else if (index == Object.keys(avg).length-1) {
       avgTitle = document.createElement('h3')
       avgTitle.innerHTML = "Has " + avg[avgName] + " out of "+ Object.values(avg)[Object.keys(avg).length-1] + " Possible Game Items"
     }
-    // console.log(avg[avgName])
     avgTitle != "" ? results.appendChild(avgTitle) : undefined
   })
   

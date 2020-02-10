@@ -2,6 +2,11 @@ let sectionFilter = document.getElementById("sectionFilter")
 let selectionTitle = document.getElementById("selection")
 let resetFilter = document.getElementById("reset")
 let bestFilter = document.getElementById("bestTeamFilter")
+let teamSearch = document.getElementById('teamSearch')
+
+const clearSearch = section => {
+  section.map(val => val.style.display = "none")  
+}
 
 sectionFilter.addEventListener("change", ()=> {
   let selection = ""
@@ -19,8 +24,16 @@ resetFilter.addEventListener('click', ()=> {
   document.getElementById('sectionFilter').value = "undefined"
 })
 
+teamSearch.addEventListener('input', ()=> {
+  let teamStats = Object.values(document.getElementsByClassName("teamStats"))
+  let teamNameContainer = Object.values(document.getElementsByClassName("teamName"))
+  clearSearch(teamStats)
+  let searchResult = teamNameContainer.map(val => val.id.includes(teamSearch.value))
+  searchResult.map((val, index) => val ? (teamStats[index].style.display = "block"): undefined)
+
+})
 const filterSection = name => {
-  Object.values(document.getElementsByClassName("section")).map(val => val.style.display = "none")  
+  clearSearch(Object.values(document.getElementsByClassName("section")))
   Object.values(document.getElementsByClassName(name)).map(val => val.style.display = "block")  
   if (name == "section") {
       selectionTitle.innerHTML = ""
