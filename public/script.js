@@ -1,8 +1,8 @@
 var internalSocket = io("/");
-let hideElm = elm => elm.style.display = "none"
-let showElm = elm => elm.style.display = "flex"
-let showElmBlock = elm => elm.style.display = "block"
-let showElmGrid = elm => elm.style.display = "grid"
+const hideElm = elm => elm.style.display = "none"
+const showElm = elm => elm.style.display = "flex"
+const showElmBlock = elm => elm.style.display = "block"
+const showElmGrid = elm => elm.style.display = "grid"
 
 let startButton = document.getElementById('startButton') 
 let startScreen = document.getElementById('startScreen')
@@ -13,31 +13,27 @@ let endGameContent = document.getElementById('endgameToggle')
 let teamInput = document.getElementById('teamInput')
 let formInput = document.getElementById('formInput')
 let teamNumTitle = document.getElementById('teamNumTitle')
-let credit = document.getElementById('creditToggle')
 let creditBox = document.getElementById('credit')
 let center = document.getElementById('center')
 let submitButton = document.getElementById('submitButton')
-let resultsButton = document.getElementById('sendResults')
+let submitAlert = document.getElementById('submitAlert')
+let errorAlert = document.getElementById('errorAlert')
+let credit = document.getElementById('credits')
+let closeCredit = document.getElementById('close')
 let downButton = "https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fsort-down.png?v=1573261554345"
 let upButton = "https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fcaret-arrow-up.png?v=1573263206955"
 let autoToggle = true
 let teleToggle = true
 let endToggle = true
-let creditToggle = true
 let submitInfo = {auto:{}, tele:{}, end:{}};
 let generated = false;
-let submit = false;
-let preventAlert = true;
 let inputsGood = true;
-let preventAlert2 = true;
+let preventSubmit = true;
 
 const toggleArrow = (setting, index) => {
   let elm = document.getElementsByClassName('button')[index] 
   let affectElm = "";
-  index == 3
-  ? affectElm = creditBox
-  : affectElm = document.getElementsByClassName('input')[index]  
-  
+  affectElm = document.getElementsByClassName('input')[index] 
   if (setting) {
     elm.src = downButton
     elm.className = 'button downButton'   
@@ -45,9 +41,7 @@ const toggleArrow = (setting, index) => {
   } else {
     elm.src = upButton,
     elm.className = 'button upButton'  
-    index == 3 
-    ? showElmGrid(affectElm)
-    : showElm(affectElm)
+    showElm(affectElm)
   }
   
 }
@@ -60,7 +54,7 @@ const preventStupidInputs = (inputElm, inputNum) => {
   return true
 }
 
-var makeInputPretty = input => {
+const makeInputPretty = input => {
 	let newInput = input
 		.split("")
 		.map((val, index) => 
@@ -80,9 +74,16 @@ var makeInputPretty = input => {
 	return newInput
 }
 
-resultsButton.addEventListener('click', ()=> {
-  window.location = "/results"
-})
+const toggleFeatures = () => {
+  Object.values(document.getElementsByClassName("toggleFeats toggleCheck"))
+  .map((val, index) => {
+    val.addEventListener('click', ()=> {
+      val.checked
+      ? showElmBlock(document.getElementsByClassName('robotFeats')[index])
+      : hideElm(document.getElementsByClassName('robotFeats')[index])
+    })
+  })
+}
 
 startButton.addEventListener('click', ()=> {
   hideElm(startButton)
@@ -91,32 +92,24 @@ startButton.addEventListener('click', ()=> {
 
 formInput.addEventListener("submit", (event)=> {
   event.preventDefault()
-  if (preventStupidInputs(document.getElementById('teamNum'), 6) && submit == false){
-    showElm(mainContent)
-    hideElm(startScreen)
-    hideElm(credit)
-    showElm(center)
-    hideElm(creditBox)
-    showElmBlock(submitButton)
-    hideElm(resultsButton)
-    teamNumTitle.innerHTML = `Team ${document.getElementById('teamNum').value}`
-    toggleFeatures()
-  } else if (preventStupidInputs(document.getElementById('teamNum')) && submit){
+  // if (preventStupidInputs(document.getElementById('teamNum'), 6) && submit == false && preventStupidInputs(document.getElementById('scoutName'), 12)){
+  if (preventStupidInputs(document.getElementById('teamNum'), 6)) {  
     submit = false;
-    preventAlert = true;
     showElm(mainContent)
     hideElm(startScreen)
-    hideElm(credit)
     showElm(center)
     hideElm(creditBox)
     showElmBlock(submitButton)
     hideElm(resultsButton)
     teamNumTitle.innerHTML = `Team ${document.getElementById('teamNum').value}`
     toggleFeatures()
-  } else {
-    alert("Bad input!")
+  } 
+  else {
+    showElm(errorAlert)
+    setTimeout(()=> {hideElm(errorAlert)}, 2000)
   }
 })
+
 
 autoContent.addEventListener('click', ()=> {
   autoToggle ? autoToggle = false : autoToggle = true
@@ -131,20 +124,12 @@ endGameContent.addEventListener('click', ()=> {
   toggleArrow(endToggle, 2)
 })
 credit.addEventListener('click', ()=> {
-  creditToggle ? creditToggle = false : creditToggle = true
-  toggleArrow(creditToggle, 3)
+  showElmGrid(creditBox)
+})
+closeCredit.addEventListener('click', ()=> {
+  hideElm(creditBox)
 })
 
-const toggleFeatures = () => {
-  Object.values(document.getElementsByClassName("toggleFeats toggleCheck"))
-  .map((val, index) => {
-    val.addEventListener('click', ()=> {
-      val.checked
-      ? showElmBlock(document.getElementsByClassName('robotFeats')[index])
-      : hideElm(document.getElementsByClassName('robotFeats')[index])
-    })
-  })
-}
 const parseJSON = json => {
   if (generated) {
     return;
@@ -164,6 +149,7 @@ const parseJSON = json => {
       objLabel.innerHTML = makeInputPretty(objName) + ":"
       
       let inputContainer = document.createElement('div')
+      inputContainer.classList.add("input-container");
       inputContainer.appendChild(objLabel)
 
       if (objType == "T/F") {
@@ -201,8 +187,12 @@ const parseJSON = json => {
 }
 
 const finalSubmit = () => {
+  submitButton.disabled = true;
   internalSocket.emit('callbackJSON')
   internalSocket.on('callJSON', data => {
+    if (preventSubmit) {
+    
+    preventSubmit = false
     let objectiveList = data;
     for (var index=0; index < 3; index++) {
       //ex. auto, tele, end
@@ -232,28 +222,27 @@ const finalSubmit = () => {
     submitInfo[sectionName].enabled = document.getElementsByClassName("toggleFeats toggleCheck")[index].checked
     }
     submitInfo.teamName = document.getElementById('teamNum').value
-    if (submit == false && inputsGood) {
-      internalSocket.emit("sendResults", submitInfo)
-      submit = true
-      preventAlert2 = false
-    }
     if (inputsGood) {
-      resetScreen()
-      hideElm(mainContent)
-      hideElm(submitButton)
-      showElm(credit)
-      showElm(startScreen) 
-      showElmBlock(resultsButton)
+      internalSocket.emit("sendResults", submitInfo)
+      showElm(submitAlert)
+      setTimeout(()=> {hideElm(submitAlert)
+        resetScreen()
+        hideElm(mainContent)
+        hideElm(submitButton)
+        showElm(startScreen) 
+        showElmBlock(resultsButton)
+      }, 2000)
     } else {
-      preventAlert2 ? (alert("Incorrect Input(s), Check again and resubmit."), preventAlert2 = false) : undefined 
+      showElm(errorAlert)
+      setTimeout(()=> {hideElm(errorAlert)}, 2000)
       inputsGood = true
+      submitButton.disabled = false
     }
+  }
   })
-  preventAlert2 = true
 }
 
 internalSocket.on('redirect', (destination) => {
-  console.log("this is being sent")
   window.location.href = destination
 })
 
@@ -270,11 +259,8 @@ const resetScreen = () => {
   Object.values(document.getElementsByClassName('robotFeats'))
     .map(val => showElmBlock(val))
   document.getElementById('teamNum').value = ""
-  if (preventAlert == true) {
-    alert("Your Scouting Form has been Submitted")
-    preventAlert2 = true;
-    preventAlert = false;
-  } 
+  submitButton.disabled = false;
+  preventSubmit = true
 }
 
 internalSocket.emit("readJSON")

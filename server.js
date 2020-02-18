@@ -31,7 +31,6 @@ socket.on('connection', (io) => {
     console.log(Date.now() - lastTime)
     // if (io.handshake.address == lastAddress && Date.now()-lastTime >= 180000) {
     client.connect( async(err, client) => {
-      
       let db = client.db("wtr_scouting")
       let teamDb = db.collection("teamInfo")      
       let doesTeamExist = await teamDb.find({"teamNum": data.teamName}).toArray()
@@ -112,10 +111,9 @@ socket.on('connection', (io) => {
                   totalNum ++;
                 }
               } else if (typeVal == "string") {
-                console.log(sectionName)
                 arrayVal = arrayVal.map(val => parseInt(val))
                 arrayVal = Math.round(arrayVal.reduce((val, prev) => val + prev)/arrayVal.length) //average function
-                returnObj["Avg" + val] = arrayVal
+                returnObj[sectionName + "." + val] = arrayVal
               }
             })
         }
