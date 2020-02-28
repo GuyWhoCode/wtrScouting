@@ -5,11 +5,13 @@ const fileReader = require('graceful-fs')
 const MongoClient = require('mongodb').MongoClient;
 const url = "mongodb+srv://admin:" + process.env.Password + "@scoutingapp-pblik.mongodb.net/test?retryWrites=true&w=majority";
 const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
-
+let lastAddress = "";
+let lastTime = 0;
 
 app.use(express.static(__dirname + "/public"));
-
 app.get("/", function(request, response) {
+  console.log(request.connection.remoteConnection);
+  console.log("testing")
   response.sendFile(__dirname + "/public/index.html");
 });
 
@@ -24,9 +26,11 @@ const socket = require('socket.io').listen(server)
 
 socket.on('connection', (io) => {
   console.log("A User has connected")
+  lastAddress =  io.handshake.address
   io.on("sendResults", data => {
+    console.log(Date.now() - lastTime)
+    // if (io.handshake.address == lastAddress && Date.now()-lastTime >= 180000) {
     client.connect( async(err, client) => {
-      
       let db = client.db("wtr_scouting")
       let teamDb = db.collection("teamInfo")      
       let doesTeamExist = await teamDb.find({"teamNum": data.teamName}).toArray()
@@ -42,10 +46,11 @@ socket.on('connection', (io) => {
             objArea[val] = [objArea[val]]
           })
         }
-        teamDb.insertOne({"teamNum": teamNum,
-                          "matchNum": 1,
-                          "matches": data
-        })
+        // teamDb.insertOne({"teamNum": teamNum,
+        //                   "matchNum": 1,
+        //                   "matches": data
+        // })
+        if (lastTime == 0) {lastTime = Date.now()}
         console.log("Team created!")
       } else {
         console.log("Team is updated!")
@@ -58,9 +63,14 @@ socket.on('connection', (io) => {
             objArea[val].push(data[sectionName][val])
           })
         }
-        teamDb.updateOne({"teamNum": data.teamName}, {$set: {"matchNum": matchNum, "matches": matchList}})
+        if (lastTime == 0) {lastTime = Date.now()}
+        // teamDb.updateOne({"teamNum": data.teamName}, {$set: {"matchNum": matchNum, "matches": matchList}})
       }
     });
+  // } else if (io.handshake.address == lastAddress && Date.now()-lastTime <= 180000){
+  //   let destination = "./badSubmit.html"
+  //   socket.emit("redirect", destination)
+  // }
     // socket.emit('receieveResults', data)
   })
   io.on("readJSON", ()=>{
@@ -103,7 +113,7 @@ socket.on('connection', (io) => {
               } else if (typeVal == "string") {
                 arrayVal = arrayVal.map(val => parseInt(val))
                 arrayVal = Math.round(arrayVal.reduce((val, prev) => val + prev)/arrayVal.length) //average function
-                returnObj["Avg" + val] = arrayVal
+                returnObj[sectionName + "." + val] = arrayVal
               }
             })
         }

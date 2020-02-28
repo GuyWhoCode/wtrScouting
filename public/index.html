@@ -1,53 +1,66 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>WTR Beta Scouting App</title>
+    <title>WTR Scouting App</title>
     <link rel="stylesheet" href="/style.css" />
     <link
       rel="icon"
-      href="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Flogo.jpg?v=1573224268766"
+      href="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fweee.png?v=1581295487926"
       type="image/png"
     />
-<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Fjalla+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cabin&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/dc8edd9f3a.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
   </head>
   <body>
-    <br />
-
+    <ul id="navbar">
+      <li id="main"><a href="/index.html">Main</a></li>
+      <li><a href="/results.html">Results</a></li>
+      <li><a id="credits">Credits</a></li> 
+    </ul>
+    <div id="submitAlert" class="customAlert">Your Scouting Form has been Submitted</div>
+    <div id="errorAlert" class="customAlert">Error: Incorrect Input</div>
     <div id="startScreen">
-      <h1 id="title">Scouting App (Beta)</h1>
+      <h1 id="title" class="title">Scouting App</h1>
       <img
-        src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Flogo.jpg?v=1573224268766"
+        src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fweee.png?v=1581295487926"
         id="logo"
       />
-      <button id="startButton">Start Scouting</button>
+      <button id="startButton">Start</button>
       <section id="teamInput">
         <form id="formInput">
-          <label>Team #</label>
-          <input type="number" id="teamNum" />
+          <section>
+            <label class="startLabel">Team #</label>
+            <input type="number" id="teamNum" required/>
+          </section>
+          <!-- <section>
+            <label class="startLabel">Name:</label>
+            <input type="text" id="scoutName" required/>
+          </section> -->
+          <!-- <input type="submit" id="submitScoutForm"> -->
         </form>
       </section>
     </div>
 
     <section id="main-content">
-      <h1 id="teamNumTitle"></h1>
+      <h1 id="teamNumTitle" class="title"></h1>
       <div id="autoToggle" class="toggle">
-        <h1 class="toggleTitle">Auto</h1>
-        <img
+        <h1 class="toggleTitle title">Auto</h1>
+        <!-- <img
+          class="button downButton"
+          src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fsort-up-solid.svg?v=1581882815279"
+        /> -->
+                <img
           class="button downButton"
           src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fsort-down.png?v=1573261554345"
         />
+        <!-- <i class="fas fa-sort-up"></i> -->
       </div>
 
       <section id="autoInput" class="input">
         <label>Robot Has Auto:</label>
-        <label class="checkBoxContainer true toggleFeats"
-          >Yes
-          <input
-            type="checkbox"
-            class="toggleFeats toggleCheck"
-            checked="true"
-          />
+        <label class="checkBoxContainer true toggleFeats">Yes<input type="checkbox" class="toggleFeats toggleCheck" checked="true" />
           <span class="checkBox"></span>
         </label>
         <div class="robotFeats" id="autoFeats">
@@ -55,7 +68,7 @@
       </section>
 
       <div id="teleOpToggle" class="toggle">
-        <h1 class="toggleTitle">Tele Op</h1>
+        <h1 class="toggleTitle title">Tele Op</h1>
         <img
           class="button downButton"
           src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fsort-down.png?v=1573261554345"
@@ -64,14 +77,7 @@
 
       <section id="teleInput" class="input">
         <label>Robot Has Tele Op:</label>
-        <label class="checkBoxContainer true toggleFeats"
-          >Yes
-          <input
-            type="checkbox"
-            id="teleWork"
-            class="toggleFeats toggleCheck"
-            checked="true"
-          />
+        <label class="checkBoxContainer true toggleFeats">Yes<input type="checkbox" id="teleWork" class="toggleFeats toggleCheck" checked="true"/>
           <span class="checkBox"></span>
         </label>
         <div class="robotFeats" id="teleFeats">
@@ -79,7 +85,7 @@
       </section>
 
       <div id="endgameToggle" class="toggle">
-        <h1 class="toggleTitle">End Game</h1>
+        <h1 class="toggleTitle title">End Game</h1>
         <img
           class="button downButton"
           src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fsort-down.png?v=1573261554345"
@@ -88,14 +94,7 @@
 
       <section id="endInput" class="input">
         <label>Robot Has Endgame:</label>
-        <label class="checkBoxContainer true toggleFeats"
-          >Yes
-          <input
-            type="checkbox"
-            id="endWork"
-            class="toggleFeats toggleCheck"
-            checked="true"
-          />
+        <label class="checkBoxContainer true toggleFeats">Yes<input type="checkbox" id="endWork" class="toggleFeats toggleCheck" checked="true"/>
           <span class="checkBox"></span>
         </label>
         <div class="robotFeats" id="endFeats">
@@ -103,23 +102,14 @@
       </section>
     </section>
     
-    
-    <button id="sendResults">Results</button>
-    
-    
     <div id="center">
       <button onclick="finalSubmit()" id="submitButton">Submit Scouting Form</button>
     </div>
-    <div id="creditToggle" class="toggle">
-      <h1 class="toggleTitle">Credits</h1>
-      <img
-        class="button downButton"
-        src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fsort-down.png?v=1573261554345"
-      />
-    </div>    
+
     <section id="credit">
-      <h1 class="creditTitles">Coded by this dude</h1>
-      <h1 class="creditTitles">People who Don't Know Colors</h1>
+      <img id="close" src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Ftimes-circle-regular.svg?v=1581958897797">
+      <h1 class="creditTitles title">Coded by this dude</h1>
+      <h1 class="creditTitles title">People who Don't Know Colors</h1>
       <br>
       <h1 class="creditTitles">Jason</h1>
       <div>
