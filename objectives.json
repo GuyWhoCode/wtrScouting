@@ -1,0 +1,17 @@
+{
+  "auto": {
+    "passedInitiationLine": "T/F",
+    "ballsScoredInAuto": "Num",
+    "canReloadBalls": "T/F"
+  },
+  "tele": {
+    "canDriveWell(Scale of 1-3)": "Num",
+    "shootingAccuracy(Scale of 1-3)": "Num",
+    "reloadingBalls(Scale of 1-3)": "Num",
+    "canShoot": "T/F"
+  },
+  "end": {
+    "canHang": "T/F",
+    "canPark": "T/F"
+  }
+}

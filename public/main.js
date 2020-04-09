@@ -4,7 +4,6 @@ const showElm = elm => elm.style.display = "flex"
 const showElmBlock = elm => elm.style.display = "block"
 const showElmGrid = elm => elm.style.display = "grid"
 
-let startButton = document.getElementById('startButton') 
 let startScreen = document.getElementById('startScreen')
 let mainContent = document.getElementById('main-content')
 let autoContent = document.getElementById('autoToggle')
@@ -20,6 +19,7 @@ let submitAlert = document.getElementById('submitAlert')
 let errorAlert = document.getElementById('errorAlert')
 let credit = document.getElementById('credits')
 let closeCredit = document.getElementById('close')
+let robotNotes = document.getElementById('robotNotes')
 let downButton = "https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fsort-down.png?v=1573261554345"
 let upButton = "https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fcaret-arrow-up.png?v=1573263206955"
 let autoToggle = true
@@ -35,13 +35,13 @@ const toggleArrow = (setting, index) => {
   let affectElm = "";
   affectElm = document.getElementsByClassName('input')[index] 
   if (setting) {
-    elm.src = downButton
-    elm.className = 'button downButton'   
-    hideElm(affectElm)
-  } else {
-    elm.src = upButton,
-    elm.className = 'button upButton'  
+    elm.src = upButton
+    elm.className = 'button upButton'   
     showElm(affectElm)
+  } else {
+    elm.src = downButton,
+    elm.className = 'button downButton'  
+    hideElm(affectElm)
   }
   
 }
@@ -77,36 +77,44 @@ const makeInputPretty = input => {
 const toggleFeatures = () => {
   Object.values(document.getElementsByClassName("toggleFeats toggleCheck"))
   .map((val, index) => {
-    val.addEventListener('click', ()=> {
-      val.checked
-      ? showElmBlock(document.getElementsByClassName('robotFeats')[index])
-      : hideElm(document.getElementsByClassName('robotFeats')[index])
-    })
+    if (index != 0) {
+      val.addEventListener('click', ()=> {
+        val.checked
+        ? showElmBlock(document.getElementsByClassName('robotFeats')[index-1])
+        : hideElm(document.getElementsByClassName('robotFeats')[index-1])
+      })
+    } else {
+      val.addEventListener('click', ()=> {
+        val.checked
+        ? Object.values(document.getElementsByClassName('robotFeats')).map(val => showElmBlock(val))
+        : (Object.values(document.getElementsByClassName('robotFeats')).map(val => hideElm(val)),
+        Object.values(document.getElementsByClassName("toggleFeats toggleCheck")).map(val => val.checked = false)
+        )
+      })
+    } 
   })
 }
 
-startButton.addEventListener('click', ()=> {
-  hideElm(startButton)
-  showElm(teamInput)
-})
-
+//form submit for start screen
 formInput.addEventListener("submit", (event)=> {
   event.preventDefault()
-  // if (preventStupidInputs(document.getElementById('teamNum'), 6) && submit == false && preventStupidInputs(document.getElementById('scoutName'), 12)){
-  if (preventStupidInputs(document.getElementById('teamNum'), 6)) {  
+  if (picEnabled) {
+    console.log("this is toggleable")
+  }
+  else if (preventStupidInputs(document.getElementById('teamNum'), 6) && preventStupidInputs(document.getElementById('qualMatch'), 3) && picEnabled == false) {  
     submit = false;
     showElm(mainContent)
     hideElm(startScreen)
     showElm(center)
     hideElm(creditBox)
+    showElmBlock(robotNotes)
     showElmBlock(submitButton)
-    hideElm(resultsButton)
     teamNumTitle.innerHTML = `Team ${document.getElementById('teamNum').value}`
     toggleFeatures()
   } 
   else {
     showElm(errorAlert)
-    setTimeout(()=> {hideElm(errorAlert)}, 2000)
+    setTimeout(()=> {hideElm(errorAlert)}, 1500)
   }
 })
 
@@ -176,7 +184,7 @@ const parseJSON = json => {
         numInput.type = "number"
         numInput.className = "numInput"
         numInput.id = objName
-        numInput.value = 0
+        numInput.value = 1
         
         inputContainer.appendChild(numInput)
       }
@@ -222,6 +230,13 @@ const finalSubmit = () => {
     submitInfo[sectionName].enabled = document.getElementsByClassName("toggleFeats toggleCheck")[index].checked
     }
     submitInfo.teamName = document.getElementById('teamNum').value
+    submitInfo.qualificationMatch = document.getElementById("qualMatch").value
+    if (robotNotes.value == "") {
+      submitInfo.robotNotes = "No Notes"
+    } else {
+      submitInfo.robotNotes = robotNotes.value
+    }
+    console.log(submitInfo)
     if (inputsGood) {
       internalSocket.emit("sendResults", submitInfo)
       showElm(submitAlert)
@@ -230,7 +245,7 @@ const finalSubmit = () => {
         hideElm(mainContent)
         hideElm(submitButton)
         showElm(startScreen) 
-        showElmBlock(resultsButton)
+        hideElm(robotNotes)
       }, 2000)
     } else {
       showElm(errorAlert)
@@ -251,7 +266,7 @@ const resetScreen = () => {
     .map(val => val.checked = false)
   
   Object.values(document.getElementsByClassName('numInput'))
-    .map(val => val.value = "0")
+    .map(val => val.value = "1")
   
   Object.values(document.getElementsByClassName('toggleFeats toggleCheck'))
     .map(val => val.checked = true)
@@ -259,6 +274,8 @@ const resetScreen = () => {
   Object.values(document.getElementsByClassName('robotFeats'))
     .map(val => showElmBlock(val))
   document.getElementById('teamNum').value = ""
+  document.getElementById('qualMatch').value = ""
+  robotNotes.value = ""
   submitButton.disabled = false;
   preventSubmit = true
 }

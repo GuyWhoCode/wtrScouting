@@ -2,7 +2,6 @@ let sectionFilter = document.getElementById("sectionFilter")
 let selectionTitle = document.getElementById("selection")
 let resetFilter = document.getElementById("reset")
 let teamSearch = document.getElementById('teamSearch')
-
 const clearSearch = section => {
   section.map(val => val.style.display = "none")  
 }
@@ -27,6 +26,7 @@ teamSearch.addEventListener('input', ()=> {
   .filter(val => val != undefined)
   .map(val => Object.values(document.getElementsByClassName("stats " + val)).map(val => val.style.display = "block"))
 })
+
 const filterSection = name => {
   clearSearch(Object.values(document.getElementsByClassName("section")))
   Object.values(document.getElementsByClassName(name)).map(val => val.style.display = "block")  
