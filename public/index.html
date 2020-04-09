@@ -10,57 +10,67 @@
     />
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Cabin&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/dc8edd9f3a.css">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" rel="stylesheet">
   </head>
   <body>
     <ul id="navbar">
-      <li id="main"><a href="/index.html">Main</a></li>
+      <li id="main" class="activeTab"><a>Main</a></li>
       <li><a href="/results.html">Results</a></li>
       <li><a id="credits">Credits</a></li> 
+      <li><a id="roboPics">Robot Pics</a></li> 
+      <li><a id="status"></a></li> 
+      <li><a id="multiSubmit"></a></li>
     </ul>
     <div id="submitAlert" class="customAlert">Your Scouting Form has been Submitted</div>
     <div id="errorAlert" class="customAlert">Error: Incorrect Input</div>
+    <!-- Drop down -->
+    <!-- <section id="dropdownMenu">
+    </section> -->
     <div id="startScreen">
       <h1 id="title" class="title">Scouting App</h1>
       <img
         src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fweee.png?v=1581295487926"
         id="logo"
       />
-      <button id="startButton">Start</button>
+      <img id="previewImg" width="30%" height="30%">
       <section id="teamInput">
         <form id="formInput">
-          <section>
+          <section class="startRowLabel" id="teamNumLabel">
             <label class="startLabel">Team #</label>
-            <input type="number" id="teamNum" required/>
+            <input type="number" id="teamNum" class="startInput" required/>
           </section>
-          <!-- <section>
-            <label class="startLabel">Name:</label>
-            <input type="text" id="scoutName" required/>
-          </section> -->
-          <!-- <input type="submit" id="submitScoutForm"> -->
+          <section class="startRowLabel" id="matchNumLabel">
+            <label class="startLabel">Match #</label>
+            <input type="number" id="qualMatch" class="startInput" required/>
+          </section>
+          <section class="startRowLabel" id="picUploadLabel">
+            <button id="addPic" class="actionButton">Add Picture</button>
+            <input type="file" id="robotPicture" class="startInput"/>
+          </section>
+          <input type="submit" id="submitStartForm" class="actionButton">
         </form>
       </section>
     </div>
 
     <section id="main-content">
       <h1 id="teamNumTitle" class="title"></h1>
+      <div id="disabled">
+        <label id="disabledTitle">Robot Is Not Disabled:</label>
+        <label class="checkBoxContainer true toggleFeats">Yes<input type="checkbox" class="toggleFeats toggleCheck" checked="true" />
+          <span class="checkBox"></span>
+        </label>
+      </div>
       <div id="autoToggle" class="toggle">
         <h1 class="toggleTitle title">Auto</h1>
-        <!-- <img
-          class="button downButton"
-          src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fsort-up-solid.svg?v=1581882815279"
-        /> -->
-                <img
-          class="button downButton"
-          src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fsort-down.png?v=1573261554345"
-        />
-        <!-- <i class="fas fa-sort-up"></i> -->
+          <img
+          class="button upButton"
+          src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fcaret-arrow-up.png?v=1573263206955"
+          />
       </div>
 
       <section id="autoInput" class="input">
         <label>Robot Has Auto:</label>
-        <label class="checkBoxContainer true toggleFeats">Yes<input type="checkbox" class="toggleFeats toggleCheck" checked="true" />
+        <label class="checkBoxContainer true toggleFeats">Yes<input type="checkbox" id = "autoWork" class="toggleFeats toggleCheck" checked="true" />
           <span class="checkBox"></span>
         </label>
         <div class="robotFeats" id="autoFeats">
@@ -70,8 +80,8 @@
       <div id="teleOpToggle" class="toggle">
         <h1 class="toggleTitle title">Tele Op</h1>
         <img
-          class="button downButton"
-          src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fsort-down.png?v=1573261554345"
+          class="button upButton"
+          src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fcaret-arrow-up.png?v=1573263206955"
         />
       </div>
 
@@ -87,8 +97,8 @@
       <div id="endgameToggle" class="toggle">
         <h1 class="toggleTitle title">End Game</h1>
         <img
-          class="button downButton"
-          src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fsort-down.png?v=1573261554345"
+          class="button upButton"
+          src="https://cdn.glitch.com/14d27a3a-8205-462a-b9d9-b36a9ebfed13%2Fcaret-arrow-up.png?v=1573263206955"
         />
       </div>
 
@@ -102,8 +112,10 @@
       </section>
     </section>
     
+    <textarea id="robotNotes" placeholder="Special/Misc notes about Robot Performance"></textarea>
+    
     <div id="center">
-      <button onclick="finalSubmit()" id="submitButton">Submit Scouting Form</button>
+      <button onclick="finalSubmit()" id="submitButton" class="actionButton">Submit Form</button>
     </div>
 
     <section id="credit">
@@ -133,7 +145,8 @@
       </div>
     </section>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-    <script type="text/javascript" src="objectives.json"></script>
-    <script src="script.js"></script>
+    <script src="main.js"></script>
+    <script src="offline.js"></script>
+    <script src="pic.js"></script>
   </body>
 </html>

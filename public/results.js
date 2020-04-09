@@ -1,12 +1,29 @@
+Storage.prototype.setObject = function(key, value) {
+    this.setItem(key, JSON.stringify(value));
+}
+
+Storage.prototype.getObject = function(key) {
+    return JSON.parse(this.getItem(key));
+}
+
 var resultSocket = io("/");
 resultSocket.emit("callDB")
 resultSocket.on("receieveDB", (data, avg) => {
+  localStorage.setObject("entireDb", data)
+  localStorage.setObject("entireAvg", avg)
   data.map((team, index) => createTeamData(team, avg[team.teamNum]))
 })
-let showElmGrid = elm => elm.style.display = "grid"
+const showElmGrid = elm => elm.style.display = "grid"
+const hideElm = elm => elm.style.display = "none"
 
 let resultsBox = document.getElementById('results')
 let teamInfo = document.getElementById('teamInfo')
+let filterToggle = document.getElementById('filterToggle')
+let filter = document.getElementById("filters")
+
+filterToggle.addEventListener("click", ()=> {
+  filterToggle.open ? hideElm(filter) : showElmGrid(filter)
+})
 
 const makeInputPretty = input => {
 	let newInput = input
@@ -73,7 +90,7 @@ const createTeamData = (data, avg) => {
   teamName.id = data.teamNum
   results.appendChild(teamName)
   
-  let matchNum = document.createElement('h2')
+  let matchNum = document.createElement("h2")
   matchNum.innerHTML = `${data.matchNum}`
   matchNum.className = "matchNum stats " + data.teamNum
 
@@ -87,21 +104,25 @@ const createTeamData = (data, avg) => {
       avgTitle = document.createElement('h3')
       avgTitle.innerHTML = "Average " + makeInputPretty(avgStr[1]) + ":" + avg[avgName]
       avgTitle.className = "section " + avgStr[0] + " avg " + data.teamNum
-    } else if (index == Object.keys(avg).length-1) {
-      avgTitle = document.createElement('h3')
-      avgTitle.innerHTML = "Has " + avg[avgName] + " out of "+ Object.values(avg)[Object.keys(avg).length-1] + " Possible Game Items"
-    }
+    } 
     avgTitle != "" ? results.appendChild(avgTitle) : undefined
   })
   
-  
+  let seeMatchNumbers = document.createElement('h3')
+  seeMatchNumbers.className = `matchNumbers ${data.teamNum}` 
+  seeMatchNumbers.innerHTML = `Match Numbers: ` + data.qualificationMatch
+  results.appendChild(seeMatchNumbers)
+
   let seeMatch = document.createElement('button')
   seeMatch.innerHTML = "All Matches"
   seeMatch.onclick = function(){searchTeam(data.teamNum)}
+  seeMatch.className = "seeMatch"
   results.appendChild(seeMatch)
+
   resultsBox.appendChild(results)
   resultsBox.appendChild(matchNum)
   resultsBox.appendChild(placement)
+  findBestTeam()
   Object.values(document.getElementById('results').childNodes)
   .filter((val, index) => index > 6)
   .map((val, index) => (index % 6) < 3 ? val.style.backgroundColor = "gray": (val.style.backgroundColor = "#a9a9a9"))
@@ -120,12 +141,18 @@ const fillTeamInfo = (info, returnArea) => {
     matchTitle.innerHTML = genMatchTitle(index+1)
     matchTitle.className = "title"
     returnResult.appendChild(matchTitle)
+
+    let matchNumber = document.createElement('h1')
+    matchNumber.className = "objInfo"
+    matchNumber.innerHTML = `Qualification Match: ${info.qualificationMatch[index]}`
+    returnResult.appendChild(matchNumber)
+
     let matchData = Object.values(matches)
 
     for (var num = 0; num < 3; num++) { //objective scope
       let objSectionName = Object.keys(matches)[num]
 
-      let objFeatures = document.createElement('h2')
+      let objFeatures = document.createElement('div')
       objFeatures.className = "section " + objSectionName
       
       let objArea = matches[objSectionName]
@@ -135,22 +162,27 @@ const fillTeamInfo = (info, returnArea) => {
       ? (
         Object.keys(objArea).map((val, ind) => {
           if (val != "enabled") {
-            let newElm = ""
-            newElm = document.createTextNode(makeInputPretty(val) + `: ${Object.values(objArea)[ind][index]}`) 
-            
-            let newLine = document.createElement('br')
+            let newElm = document.createElement("h2")
+            newElm.className = "objInfo"
+            newElm.innerHTML = makeInputPretty(val) + `: ${Object.values(objArea)[ind][index]}`
             objFeatures.appendChild(newElm)
-            objFeatures.appendChild(newLine)
           }
         })
       )
       : objFeatures.innerHTML = `Robot Has No ${objSectionName}`
       returnResult.appendChild(objFeatures)
     }
+    let notes = document.createElement("h3")
+    notes.innerHTML = "Notes: " + info.robotNotes[index]
+    returnResult.appendChild(notes)
     returnArea.appendChild(returnResult)
   }
 }
 
 resultSocket.on("foundTeam", team => {  
   fillTeamInfo(team, teamInfo)
+})
+
+resultSocket.on("resetMsg", () => {
+  console.log("database has been reset!")
 })

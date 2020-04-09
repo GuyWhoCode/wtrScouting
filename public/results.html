@@ -12,37 +12,43 @@
       <li><a href="/index.html">Main</a></li>
       <li id="main"><a href="/results.html">Results</a></li>
     </ul>
-    <section id="search">
-      <h2 id="selectTeam">Search Team Number</h2>
-      <input type="number" id="teamSearch">
+    <section id="searchArea">
+      <section class="search" id="team">
+        <h2 id="selectTeam" class="searchTitle">Search Team Number</h2>
+        <input type="number" id="teamSearch" class="searchInput">
+      </section>
+      
+      <!-- <section class="search" id="match">
+        <h2 id="selectMatch" class="searchTitle">Search Match Number</h2>
+        <input type="number" id="matchSearch" class="searchInput">
+      </section> -->
     </section>
+    <details id="filterToggle">
+      <summary>Filter</summary>
+    </details>
     
+    <div id="filters">
+      <h1 id="filterTitle">Filters:</h1>  
+      
+      <h2 id="game" class="gridItem">Game Sections:</h2>
+      <select id="sectionFilter" class="gridItem options">
+        <option value="undefined">Sections</option>
+        <option value="auto">Auto</option>
+        <option value="tele">Tele-Op</option>
+        <option value="end">End Game</option>
+      </select>
+  
+      <h1 id="selection"></h1>
+      <button id="reset">Reset Filter</button>
+    
+    </div>
+    <br>
     <div id="results">
       <h1 class="title">Team Number</h1>
       <h1 class="title">Matches Played</h1>
       <h1 class="title">Placement</h1>
     </div>
-    <div id="filters">
-    <h1 id="filterTitle">Filters:</h1>  
-    
-    <h2 id="game" class="gridItem">Game Sections:</h2>
-    <select id="sectionFilter" class="gridItem options">
-      <option value="undefined">Sections</option>
-      <option value="auto">Auto</option>
-      <option value="tele">Tele-Op</option>
-      <option value="end">End Game</option>
-    </select>
-    
-    <h2 id="best" class="gridItem">Best Teams:</h2>
-    <select id="bestTeamFilter" class="gridItem options">
-      <option value="undefined">None</option>
-      <option value="best">Best</option>
-    </select>
 
-    <h1 id="selection"></h1>
-    <button id="reset">Reset Filter</button>
-  
-  </div>
   <div id="teamInfo"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
   <script src="results.js"></script>

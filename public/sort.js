@@ -1,11 +1,5 @@
-let bestFilter = document.getElementById("bestTeamFilter")
 let teamNames = document.getElementsByClassName("teamName")
 let result = document.getElementById('results')
-bestFilter.addEventListener("change", ()=> {
-    let selection = bestFilter.value
-    if (selection != "") findBestTeam()
-    else location.reload()
-})
 
 const getKeysByValue = (obj, val) => {
     let returnItem = Object.keys(obj).find(key => obj[key] === val)
