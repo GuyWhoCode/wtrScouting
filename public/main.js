@@ -98,20 +98,37 @@ const toggleFeatures = () => {
 //form submit for start screen
 formInput.addEventListener("submit", (event)=> {
   event.preventDefault()
-  if (picEnabled) {
-    console.log("this is toggleable")
-  }
-  else if (preventStupidInputs(document.getElementById('teamNum'), 6) && preventStupidInputs(document.getElementById('qualMatch'), 3) && picEnabled == false) {  
-    submit = false;
-    showElm(mainContent)
-    hideElm(startScreen)
-    showElm(center)
-    hideElm(creditBox)
-    showElmBlock(robotNotes)
-    showElmBlock(submitButton)
-    teamNumTitle.innerHTML = `Team ${document.getElementById('teamNum').value}`
-    toggleFeatures()
-  } 
+  if (preventStupidInputs(document.getElementById('teamNum'), 6)) {
+      if (picEnabled && online == false) { //offline mode
+      console.log("uploading offline robot picture!")
+      if (localStorage.getObject("picsDB") == null) {
+        localStorage.setObject("picsDB", [generateNewPicEntry(document.getElementById('teamNum').value, getPic())])
+      } 
+      else {
+        let oldDB = localStorage.getObject("picsDB")
+        localStorage.setObject("picsDB", [...oldDB, generateNewPicEntry(document.getElementById('teamNum').value, getPic())])
+      }
+      clearPicSubmission()
+    } else if (picEnabled && online) {
+      console.log("uploading ONLINE robot picture")
+      internalSocket.emit("uploadPic", generateNewPicEntry(document.getElementById('teamNum').value, getPic()))
+      clearPicSubmission()
+    } else if (preventStupidInputs(document.getElementById('qualMatch'), 3) && picEnabled == false) {  
+      submit = false;
+      showElm(mainContent)
+      hideElm(startScreen)
+      showElm(center)
+      hideElm(creditBox)
+      showElmBlock(robotNotes)
+      showElmBlock(submitButton)
+      teamNumTitle.innerHTML = `Team ${document.getElementById('teamNum').value}`
+      toggleFeatures()
+    }
+    else {
+      showElm(errorAlert)
+      setTimeout(()=> {hideElm(errorAlert)}, 1500)
+    } 
+}
   else {
     showElm(errorAlert)
     setTimeout(()=> {hideElm(errorAlert)}, 1500)
