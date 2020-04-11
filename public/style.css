@@ -329,10 +329,6 @@ li:hover {
 #robotPicture {
   border: none;
   display: none;
-}
-#addPic {
-  /* display: none; */
-  font-size: 3vmin;
   margin: 1% auto;
 }
 @media only screen and (min-width: 1100px) {

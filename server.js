@@ -79,6 +79,7 @@ socket.on('connection', (io) => {
     let destination = "./badSubmit.html"
     socket.emit("redirect", destination)
   }
+
   })
   io.on("readJSON", ()=>{
     let inputData = fileReader.readFileSync("./objectives.json", "utf8")
@@ -136,6 +137,7 @@ socket.on('connection', (io) => {
       })
     }
   })
+
   io.on("resetTeam", (password, teamNum) => {
     if (password == process.env.Reset_Password) {
       client.connect( async(err, client) => {
@@ -144,6 +146,13 @@ socket.on('connection', (io) => {
         socket.emit('resetMsg')
       })
     }
+  })
+
+  io.on("uploadPic", entry => {
+    client.connect(async(err, client) => {
+      let teamImages = client.db("wtr_scouting").collection("teamImages")
+      teamImages.insertOne(entry)
+    })
   })
 })
 
