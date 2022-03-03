@@ -1,5 +1,5 @@
 # WTRScouting
-A Robotics application developed from November 2019 to April 2020.
+A Robotics application initially developed from November 2019 to April 2020.
 
 # Features
 * PC and Mobile Responsive design
